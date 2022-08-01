@@ -3,3 +3,4 @@ plexapi
 colorama
 bson
 requests
+python-dotenv
