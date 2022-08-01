@@ -24,7 +24,7 @@ class Database:
         self._client = None
 
         self.asgard_db = None
-        self.asgard_metrics = None
+        self.asgard_analytics = None
 
         self.sections = None
 
@@ -44,8 +44,8 @@ class Database:
         if self._client is None:
             self._client = MongoClient(self.ip_address, self.port)
 
-            self.asgard_db = self.get_database("asgard-db")
-            self.asgard_metrics = self.get_database("asgard-metrics")
+            self.asgard_db = self.get_database("asgard_db")
+            self.asgard_analytics = self.get_database("asgard_analytics")
 
             self.sections = self.get_collection("sections", self.asgard_db)
 
@@ -54,7 +54,7 @@ class Database:
             self._client.close()
 
             self.asgard_db = None
-            self.asgard_metrics = None
+            self.asgard_analytics = None
 
             self.sections = None
 
