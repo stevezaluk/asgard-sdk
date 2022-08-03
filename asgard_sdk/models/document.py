@@ -1,4 +1,4 @@
-from file import GenericFile
+from .file import GenericFile
 
 class Document(GenericFile):
     def __init__(self, json: dict):

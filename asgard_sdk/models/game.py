@@ -1,4 +1,4 @@
-from file import GenericFile
+from .file import GenericFile
 
 class Game(GenericFile):
     def __init__(self, json: dict):

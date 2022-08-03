@@ -1,4 +1,4 @@
-from file import GenericFile
+from .file import GenericFile
 
 class Video(GenericFile):
     def __init__(self, json: dict):

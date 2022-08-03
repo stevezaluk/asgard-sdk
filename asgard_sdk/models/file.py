@@ -1,4 +1,4 @@
-from base import AsgardObject
+from .base import AsgardObject
 
 class GenericFile(AsgardObject):
     def __init__(self, json: dict):

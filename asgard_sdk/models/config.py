@@ -1,4 +1,4 @@
-from base import AsgardObject
+from .base import AsgardObject
 
 from os import getenv
 from os.path import exists, isfile

@@ -1,5 +1,5 @@
-from file import GenericFile
-from base import generate_object
+from .file import GenericFile
+from .base import generate_object
 
 class TVShow(GenericFile):
     def __init__(self, json: dict):
