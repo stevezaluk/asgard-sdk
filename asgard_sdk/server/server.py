@@ -1,6 +1,6 @@
 from ..connection.database import Database
 from ..models.config import Config
-from ..models.base import generate_object
+from ..models import generate_object
 
 class AsgardServer(object):
     def __init__(self, config: Config):
