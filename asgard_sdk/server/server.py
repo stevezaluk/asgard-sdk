@@ -45,13 +45,17 @@ class AsgardServer(object):
         return ret
 
     def get_file(self, term: str, section_name=None, key=None, plex=False, to_dict=False):
-        section = self.get_section(section_name)
-        if section is None:
-            return None
+        query = self._database.build_query(term)
+        
+        if section_name is not None:
+            section = self.get_section(section_name) # wrap this
+            if section is None:
+                return None
 
-        query = self._database._build_query(term)
+            file = self._database.get_document(query, self._database.get_collection(section.mongo_collection))
+        else:
+            raise NotImplementedError("Only retrieval from a single section works for now. Implementation planned by August 10th")
 
-        file = self._database.get_document(query, self._database.get_collection(section.mongo_collection))
         if file is None:
             return None
         
@@ -66,11 +70,15 @@ class AsgardServer(object):
         return ret
     
     def index(self, section_name=None, key=None, limit=15, sort=None, to_dict=False):
-        section = self.get_section(section_name)
-        if section is None:
-            return None
-        
-        index = self._database.index_collection(self._database.get_collection(section.mongo_collection))
+        if section is not None:
+            section = self.get_section(section_name)
+            if section is None:
+                return None
+            
+            index = self._database.index_collection(self._database.get_collection(section.mongo_collection))
+        else:
+            raise NotImplementedError("Only retrieval from a single section works for now. Implementation planned by August 10th")
+
         if to_dict:
             return index
         
