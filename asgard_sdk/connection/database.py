@@ -15,7 +15,6 @@ class MissingCollection(Exception):
 	def __init__(self, message):
 		super().__init__(message)
 
-
 class Database:
     def __init__(self, ip_address: str, port: int):
         self.ip_address = ip_address
@@ -31,7 +30,7 @@ class Database:
     def _dict_to_response(self, dict: dict):
         return loads(dumps(dict, default=str))
 
-    def _build_query(self, term: str):
+    def build_query(self, term: str):
         query = {}
 
         sha_regex = re.compile(r'\b[A-Fa-f0-9]{64}\b')
@@ -96,7 +95,7 @@ class Database:
 
         return ret
 
-    def get_document(self, query: dict, collection: Collection):
+    def get_document(self, query: dict, collection: Collection) -> dict:
         ret = None
 
         document = collection.find_one(query)
@@ -107,3 +106,9 @@ class Database:
         ret = self._dict_to_response(document)
 
         return ret
+
+    def search_for_one(self, query: dict) -> dict:
+        pass
+
+    def search(self, query: dict, collection: Collection) -> dict:
+        pass
