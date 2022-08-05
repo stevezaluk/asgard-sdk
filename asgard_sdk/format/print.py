@@ -4,6 +4,7 @@ from colorama import Fore, Style
 RED = Fore.RED
 GREEN = Fore.GREEN
 BLUE = Fore.BLUE
+YELLOW = Fore.YELLOW
 
 NC = Style.RESET_ALL
 
@@ -28,6 +29,14 @@ def print_success(*text, fatal=False):
 
 def print_info(*text, fatal=False):
     str = "[{b}info{nc}] ".format(b=BLUE, nc=NC)
+
+    for t in text:
+        str += t
+
+    print(str)    
+
+def print_warning(*text, fatal=False):
+    str = "[{y}warning{nc}] ".format(y=YELLOW, nc=NC)
 
     for t in text:
         str += t
