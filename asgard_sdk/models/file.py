@@ -25,7 +25,7 @@ class LocalPathNotFound(Exception):
     def __init__(self, message):
         super().__init__(message)
 
-class LocalPath(AsgardObject):
+class LocalPath(object):
     def __init__(self, path: str):
         self.path = path
         self.type = None
