@@ -9,6 +9,12 @@ class AsgardServer(object):
         self._database = Database(config.mongo_ip, config.mongo_port)
         self._plex = None
 
+    def get_database(self):
+        return self._database
+    
+    def get_plex(self):
+        return self._plex
+
     def connect(self):
         self._database.connect()
 
