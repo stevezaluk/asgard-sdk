@@ -85,6 +85,9 @@ class LocalPath(object):
         if file_ext in game_extensions:
             file_type = "game"
 
+        if file_type is None:
+            file_type = "generic-file"
+
         return file_type
             
     def get_sha(self):
