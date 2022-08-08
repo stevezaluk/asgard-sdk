@@ -70,6 +70,9 @@ class Database:
 
         return ret
 
+    def create_collection(self, name: str, database: Database):
+        database[name]
+
     def get_collection(self, name: str, database: Database) -> Collection:
         ret = None
         
@@ -82,7 +85,6 @@ class Database:
             raise MissingCollection("Cannot find collection: {}".format(name))
 
         return ret
-
 
     def index_collection(self, collection: Collection) -> list:
         ret = []
@@ -106,6 +108,17 @@ class Database:
         ret = self._dict_to_response(document)
 
         return ret
+
+    def update_document(self, query: dict, update: dict, collection: Collection):
+        update_query = {"$set": update}
+        result = collection.update_one(query, update)
+
+        matched_count = result.matched_count
+
+        if matched_count == 0:
+            return None
+        else:
+            return matched_count
 
     def search_for_one(self, query: dict) -> dict:
         pass
