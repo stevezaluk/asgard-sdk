@@ -1,7 +1,4 @@
-from .base import AsgardObject
-
-from os import getenv
-from os.path import exists, isfile
+from .file import LocalPath
 
 from dotenv import dotenv_values
 
@@ -23,29 +20,23 @@ class ConfigError(Exception):
 
     plex_token (str) : Access code to send with requests to the plex REST API
 """
-class Config(AsgardObject): # untested
+class Config(LocalPath): # untested
     def __init__(self, path: str):
-        self.path = path
+        super(Config, self).__init__(path)
+
         self.values = None
-        self.validate_path()
-        
-        super(Config, self).__init__(self.values)
 
-        self.mongo_ip = self.get_value("MONGO_IP")
-        self.mongo_port = self.get_value("MONGO_PORT")
+        self.validate_file()
 
-        self.plex_ip = self.get_value("PLEX_IP")
-        self.plex_port = self.get_value("PLEX_PORT")
-        self.plex_token = self.get_value("PLEX_TOKEN")
+        self.mongo_ip = self.values.get("MONGO_IP")
+        self.mongo_port = self.values.get("MONGO_PORT")
 
-    def validate_path(self):
-        if self.path.startswith("~"):
-            self.path = self.path.replace("~", getenv("HOME"))
+        self.plex_ip = self.values.get("PLEX_IP")
+        self.plex_port = self.values.get("PLEX_PORT")
+        self.plex_token = self.values.get("PLEX_TOKEN")
 
-        if exists(self.path) is False:
-            raise ConfigError("Config path not found: {}".format(self.path))
-        
-        if isfile(self.path) is False:
+    def validate_file(self):        
+        if self.type == "dir" or self.type == None:
             raise ConfigError("Config must be a file")
 
         self.values = dotenv_values(self.path)
