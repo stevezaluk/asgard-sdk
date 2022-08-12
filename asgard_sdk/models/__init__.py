@@ -1,3 +1,4 @@
+from .section import Section
 from .file import GenericFile
 from .video import Video
 from .document import Document
@@ -6,7 +7,11 @@ from .game import Game
 def generate_object(json: dict):
     keys = json.keys()
 
-    ret = GenericFile(json)
+    if "section_name" in keys:
+        return Section(json)
+
+    if "file_name" in keys:
+        ret = GenericFile(json)
     
     # tv, season, episode support
     if "video_info" in keys:
