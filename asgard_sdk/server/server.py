@@ -6,7 +6,7 @@ class AsgardServer(object):
     def __init__(self, config: Config):
         self.config = config # pre-validated config
 
-        self._database = Database(config.mongo_ip, config.mongo_port)
+        self._database = Database(config.mongo_ip, int(config.mongo_port))
         self._plex = None
 
     def get_database(self):
