@@ -37,7 +37,7 @@ class LocalPath(object):
 
         self.file_name = self._tokens[-1]
         self.file_location = self.get_location()
-        self.file_size = self._stat.st_size
+        self.file_size = self._stat.st_size # do recursive file size for directory sizes
         self.file_type = self.get_asgard_type()
         self.file_sha = None
 
@@ -49,6 +49,12 @@ class LocalPath(object):
     def get_path_tokens(self):
         return self._tokens
 
+    def get_dict(self):
+        dict = {"file_name":self.file_name, "file_location":self.file_location, "file_size":self.file_size,
+                "file_type":self.file_type, "file_sha":self.get_sha(), "creation_date":self.creation_date}
+
+        return dict
+
     def validate_path(self):
         if self.path.startswith("~"):
             self.path = self.path.replace("~", os.getenv("HOME"))
@@ -57,9 +63,9 @@ class LocalPath(object):
             raise LocalPathNotFound("Failed to find Local Path: ", self.path)
 
         if os.path.isfile(self.path):
-            self.type == "file"
+            self.type = "file"
         elif os.path.isdir(self.path):
-            self.type == "dir"
+            self.type = "dir"
 
     def get_location(self):
         tokens = self.get_path_tokens()
@@ -96,4 +102,6 @@ class LocalPath(object):
             for block in iter(lambda: file.read(4096), b""):
                 file_sha.update(block)
         
-        file_sha = file_sha.hexdigest()
+        self.file_sha = file_sha.hexdigest()
+
+        return self.file_sha
