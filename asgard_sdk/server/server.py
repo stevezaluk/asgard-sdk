@@ -58,7 +58,7 @@ class AsgardServer(object):
             if section is None:
                 return None
 
-            file = self._database.get_document(query, self._database.get_collection(section.mongo_collection))
+            file = self._database.get_document(query, self._database.get_collection(section.mongo_collection, self._database.asgard_db))
         else:
             raise NotImplementedError("Only retrieval from a single section works for now. Implementation planned by August 10th")
 
@@ -76,12 +76,12 @@ class AsgardServer(object):
         return ret
     
     def index(self, section_name=None, key=None, limit=15, sort=None, to_dict=False):
-        if section is not None:
+        if section_name is not None:
             section = self.get_section(section_name)
             if section is None:
                 return None
             
-            index = self._database.index_collection(self._database.get_collection(section.mongo_collection))
+            index = self._database.index_collection(self._database.get_collection(section.mongo_collection, self._database.asgard_db))
         else:
             raise NotImplementedError("Only retrieval from a single section works for now. Implementation planned by August 10th")
 
