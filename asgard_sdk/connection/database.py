@@ -109,7 +109,7 @@ class Database:
 
         return ret
 
-    def update_document(self, query: dict, update: dict, collection: Collection):
+    def update_document(self, query: dict, update: dict, collection: Collection): # broken
         update_query = {"$set": update}
         result = collection.update_one(query, update)
 
@@ -119,3 +119,8 @@ class Database:
             return None
         else:
             return matched_count
+
+    def insert_document(self, document: dict, collection: Collection):
+        insert_id = collection.insert_one(document).inserted_id
+
+        return insert_id
