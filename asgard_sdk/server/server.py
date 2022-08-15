@@ -34,7 +34,7 @@ class AsgardServer(object):
 
         ret = generate_object(section)
 
-        return ret 
+        return ret        
 
     def get_sections(self, key=None, limit=15, sort=None, to_dict=False):
         sections = self._database.index_collection(self._database.sections)
