@@ -95,4 +95,22 @@ class AsgardServer(object):
         return ret
     
     def search(self, file_name: str, section_name=None, key=None, limit=15, sort=None, to_dict=False):
-        pass
+        index = self.index(section_name, to_dict=True)
+
+        if index is None:
+            return None
+
+        ret = []
+
+        for document in index:
+            real_file_name = document.get("file_name")
+            
+            if real_file_name is None:
+                pass
+            elif file_name in real_file_name:
+                if to_dict is False:
+                    document = generate_object(document)
+                
+                ret.append(document)
+
+        return ret

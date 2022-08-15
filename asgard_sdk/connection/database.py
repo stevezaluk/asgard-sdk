@@ -119,9 +119,3 @@ class Database:
             return None
         else:
             return matched_count
-
-    def search_for_one(self, query: dict) -> dict:
-        pass
-
-    def search(self, query: dict, collection: Collection) -> dict:
-        pass
