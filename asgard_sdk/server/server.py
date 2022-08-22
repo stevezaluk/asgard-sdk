@@ -68,10 +68,13 @@ class AsgardServer(object):
         if to_dict:
             return file
 
+        if (key is not None and key in file.keys()):
+            ret = file.get(key)
+        else:
+            ret = generate_object(file)
+
         if plex:
             pass
-
-        ret = generate_object(file)
 
         return ret
     
@@ -87,10 +90,15 @@ class AsgardServer(object):
 
         if to_dict:
             return index
-        
+
         ret = []
         for document in index:
-            ret.append(generate_object(document))
+            if (key is not None and key in document.keys()):
+                document = document.get(key)
+            else:
+                document = generate_object(document)
+            
+            ret.append(document)
 
         return ret
     
@@ -110,6 +118,8 @@ class AsgardServer(object):
             elif file_name in real_file_name:
                 if to_dict is False:
                     document = generate_object(document)
+                elif (key is not None and key in document.keys()):
+                    document = document.get(key)
                 
                 ret.append(document)
 
