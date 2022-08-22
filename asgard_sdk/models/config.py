@@ -28,6 +28,8 @@ class Config(LocalPath): # untested
 
         self.validate_file()
 
+        self.server_name = self.values.get("SERVER_NAME")
+
         self.mongo_ip = self.values.get("MONGO_IP")
         self.mongo_port = self.values.get("MONGO_PORT")
 
@@ -50,3 +52,18 @@ class Config(LocalPath): # untested
 
         if self.plex_token is None:
             raise ConfigError("Missing plex token. See https://www.plex.tv on how to get one")
+
+class ClientConfig(Config):
+    def __init__(self, path: str):
+        super(ClientConfig, self).__init__(path)
+
+        self.rest_ip = self.values.get("REST_IP")
+        self.rest_port = self.values.get("REST_PORT")
+
+        self.is_home = self.values.get("IS_HOME")
+
+        self.cached_info = {}
+
+    def validate_structure(self):
+         if self.rest_ip is None or self.rest_port is None:
+            raise ConfigError("Missing REST API information")
