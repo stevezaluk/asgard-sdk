@@ -94,6 +94,9 @@ class LocalPath(object):
         if file_type is None:
             file_type = "generic-file"
 
+        if self.type == "dir":
+            file_type = "video-series"
+
         return file_type
             
     def get_sha(self):
