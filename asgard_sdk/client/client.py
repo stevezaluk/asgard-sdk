@@ -61,6 +61,7 @@ class AsgardClient(object):
     """
     """
     def get_sections(self, key: str = None, limit: int = 15, sort: str = None, to_dict: bool = False):
+        params = {}
         if key:
             params.update({"key":key})
 
@@ -70,7 +71,7 @@ class AsgardClient(object):
         if sort:
             params.update({"sort":sort})
 
-        resp = self._query("sections")
+        resp = self._query("sections", params=params)
 
         sections = resp.get("sections")
         if to_dict:
