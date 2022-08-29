@@ -1,6 +1,8 @@
-from ..models.config import ClientConfig
 from ..format.print import print_error
+
 from ..models import generate_object
+from ..models.config import ClientConfig
+from ..models.section import Section
 
 from json import loads
 from requests import Session
@@ -27,7 +29,7 @@ class AsgardClient(object):
         self.base_url = "http://{ri}:{rp}/api/v1".format(ri=self.config.rest_ip, rp=self.config.rest_port)
         self.anayltics_url = "http://{ri}:{rp}/api/analytics".format(ri=self.config.rest_ip, rp=self.config.rest_port)
 
-        self._cache_info()
+        # self._cache_info()
 
     def _query(self, endpoint, params=None, content_type="application/json", analytics=False):
         if analytics:
@@ -56,11 +58,21 @@ class AsgardClient(object):
 
         self.config.cached_info = resp
 
-    def get_sections(self, key=None, limit=15, sort=None, to_dict=False):
+    """
+    """
+    def get_sections(self, key: str = None, limit: int = 15, sort: str = None, to_dict: bool = False):
+        if key:
+            params.update({"key":key})
+
+        if limit:
+            params.update({"limit":limit})
+
+        if sort:
+            params.update({"sort":sort})
+
         resp = self._query("sections")
 
         sections = resp.get("sections")
-
         if to_dict:
             return sections
 
@@ -72,14 +84,13 @@ class AsgardClient(object):
 
         return ret
 
-
-    def get_section(self, section_name: str, key=None, to_dict=False):
+    def get_section(self, section_name: str, key: str = None, to_dict: bool = False):
         params = {}
 
         if key:
             params.update({"key":key})
         
-        url = "sections/" + section_name
+        url = "section/" + section_name        
         section = self._query(url, params=params)
 
         if to_dict:
@@ -87,7 +98,7 @@ class AsgardClient(object):
 
         return generate_object(section)
 
-    def get_file(self, term: str, section_name=None, key=None, plex=False, to_dict=False):
+    def get_file(self, term: str, section: Section = None, key: str = None, plex: bool = False, to_dict: bool = False):
         params = {}
         if key:
             params.update({"key":key})
@@ -96,8 +107,8 @@ class AsgardClient(object):
             params.update({"plex":True})
 
         url = "file/"
-        if section_name:
-            url = url + section_name + "/"
+        if section:
+            url = url + section.section_name + "/"
 
         file = self._query(url + term, params=params)
 
@@ -106,7 +117,7 @@ class AsgardClient(object):
 
         return generate_object(file)
 
-    def index(self, section_name=None, key=None, limit=15, sort=None, to_dict=False):
+    def index(self, section: Section = None, key: str = None, limit: int = 15, sort: str = None, to_dict: bool = False):
         params = {}
 
         if key:
@@ -116,8 +127,8 @@ class AsgardClient(object):
             params.update({"limit":limit})
         
         url = "index"
-        if section_name:
-            url = url + ("/" + section_name)
+        if section:
+            url = url + ("/" + section.section_name)
         
         resp = self._query(url, params=params)
 
@@ -135,7 +146,7 @@ class AsgardClient(object):
         return ret
 
 
-    def search(self, file_name: str, section_name=None, key=None, limit=15, sort=None, to_dict=False):
+    def search(self, file_name: str, section: Section = None, key: str = None, limit: int = 15, sort: str = None, to_dict: bool = False):
         params = {"q":file_name}
 
         if key:
@@ -145,8 +156,8 @@ class AsgardClient(object):
             params.update({"limit":limit})
 
         url = "search/"
-        if section_name:
-            url = url + section_name
+        if section:
+            url = url + section.section_name
 
         resp = self._query(url, params=params)
 
