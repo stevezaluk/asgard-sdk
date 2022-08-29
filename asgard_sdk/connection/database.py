@@ -15,6 +15,19 @@ class MissingCollection(Exception):
 	def __init__(self, message):
 		super().__init__(message)
 
+"""
+    Database - Abstraction of a running instance of mongodb
+
+    ip_address (str) - The IP Address of your mongoDB instance
+    port (int) - The port of your mongoDB instance
+
+    _client (MongoClient) - The database client for interaction
+
+    asgard_db (pymongo.database.Database) - The main pymongo database that holds all section and file metadata
+    asgard_analytics (pymongo.database.Database) - The mongodb database that holds stored analytic data
+
+    sections (pymongo.collection.Collection) - The mongoDB collection that holds all of our sections. I created an instance variable for it, since it is accessed a lot.
+"""
 class Database:
     def __init__(self, ip_address: str, port: int):
         self.ip_address = ip_address
@@ -27,9 +40,28 @@ class Database:
 
         self.sections = None
 
+    """
+        _dict_to_response - Convert mongoDB documents into usable dictionaries.
+        
+        A method is needed here because having the objectID in the data causes issues.
+        The "default" argument in the "dumps" method converts it to a string
+
+        Required Arguments:
+            dict (dict) - The dictionary you want to convert
+
+        Returns a dictionary
+    """
     def _dict_to_response(self, dict: dict):
         return loads(dumps(dict, default=str))
 
+    """
+        build_query - Turn a user given term into a dictionary that we can use to query mongo
+
+        Required Arguments:
+            term (str) - Either a file name or a file_sha
+
+        Returns a dictionary
+    """
     def build_query(self, term: str):
         query = {}
 
@@ -38,6 +70,8 @@ class Database:
             query.update({"file_sha":term})
         else:
             query.update({"file_name":term})
+        
+        return query
 
     def connect(self) -> None:
         if self._client is None:
@@ -57,6 +91,14 @@ class Database:
 
             self.sections = None
 
+    """
+        get_database - Get a pymongo database object by name
+
+        Throws a MissingDatabase exception when it cant be found.
+        This is to ensure our database is always formated and created properly
+
+        Returns a pymongo.database.Database object
+    """
     def get_database(self, name: str) -> Database:
         ret = None
         
