@@ -1,6 +1,7 @@
 from asgard_sdk.models.base import AsgardObject
-from asgard_sdk.models.file import GenericFile
+from asgard_sdk.models.file import GenericFile, LocalPath
 from asgard_sdk.models.section import Section
+
 from ..connection.plex import Plex
 from ..connection.database import Database
 
@@ -33,6 +34,12 @@ class AsgardServer(object):
 
     def disconnect(self):
         self._database.disconnect()
+
+    def get_obj_from_dict(self, dict: dict):
+        pass
+
+    def get_obj_from_local(self, local_path:LocalPath):
+        pass
 
     """
         get_section - Retrieve section metadata from the database
@@ -91,6 +98,47 @@ class AsgardServer(object):
             ret.append(generate_object(section))
 
         return ret
+
+    """
+        create_section - Create a new Asgard Section
+
+        Required Paramaters:
+            section_name (str) - The name you want your section to have
+            remote_path (str) - The remote path that your (media) files are in
+            type (str) - The type of section you want to create. Can be video, video-series, games, documents, generic-file
+
+        Optional Paramaters:
+            mongo_coll (str) - The name of the mongoDB collection that will hold your file data. Defaults to the name of the section
+            plex_section (str) - The name of the plex section that you want to link to the section. Defaults to the name of the section
+    
+        Returns an Asgard Section object on success, and None on fail
+
+        If none is returned, then the section already exists
+    """
+    def create_section(self, section_name: str, remote_path: str, type: str, mongo_coll=None, plex_section=None):
+        if mongo_coll is None:
+            mongo_coll = section_name.lower()
+
+        if plex_section is None:
+            plex_section = section_name
+
+        if self.get_section(section_name) is not None:
+            return None
+
+        dict = {"section_name":section_name, "section_path":remote_path, 
+                "section_type":type, "section_size":0,
+                "mongo_collection":mongo_coll, "plex_section":plex_section, 
+                "total_downloads":0, "total_uploads":0}
+
+        if type != "video" or type != "video-series":
+            dict.pop("plex_section", None)
+
+        mongo_coll = self._database.create_collection(mongo_coll, self._database.asgard_db)
+        insert_id = self._database.insert_document(dict, self._database.sections)
+
+        section = Section(dict)
+
+        return section
     
     """
         get_file - Retrieve a single file's metadata from the database
@@ -143,12 +191,14 @@ class AsgardServer(object):
     """
     def create_file(self, file: GenericFile, section: Section):
         if section.section_type != file.file_type:
-            return None
+            return None 
 
         mongo_collection = self._database.get_collection(section.mongo_collection)
         insert_id = self._database.insert_document(file.get_json(), mongo_collection)
 
-        return file, insert_id
+        # update section metadata
+
+        return file
 
     """
         index - Retrieve all file metadata available
