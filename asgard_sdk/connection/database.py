@@ -94,6 +94,9 @@ class Database:
     """
         get_database - Get a pymongo database object by name
 
+        Required Paramaters:
+            name (str) - The name of the mongoDB collection you want
+
         Throws a MissingDatabase exception when it cant be found.
         This is to ensure our database is always formated and created properly
 
@@ -113,7 +116,7 @@ class Database:
         return ret
 
     def create_collection(self, name: str, database: Database):
-        database[name]
+        return database[name]
 
     def get_collection(self, name: str, database: Database) -> Collection:
         ret = None
