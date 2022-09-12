@@ -6,7 +6,7 @@ class Document(GenericFile):
 
         self._root = self.get_json().get("document_info")
 
-        self.format = self._root.get("format")
         self.title = self._root.get("title")
         self.author = self._root.get("author")
+        self.format = self._root.get("format")
         self.page_count = self._root.get("page_count")
