@@ -1,6 +1,8 @@
+from distutils.command.upload import upload
 from ..models.local import LocalPath
-
 from .base import AsgardObject
+
+import datetime
 
 class GenericFile(AsgardObject):
     def __init__(self, json: dict):
@@ -19,3 +21,11 @@ class GenericFile(AsgardObject):
         self.download_count = self.get_value("download_count")
 
         self.remote_path = self.file_location + self.file_name
+
+    def set_upload_info(self, uploaded_by: str):
+        self.uploaded_by = uploaded_by
+        
+        time_stamp = datetime.datetime.now()
+        time_stamp = time_stamp.strftime('%m-%d-%Y %I:%M:%S %p')
+
+        self.uploaded_date = time_stamp
