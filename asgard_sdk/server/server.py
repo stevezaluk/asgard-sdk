@@ -1,12 +1,11 @@
-from asgard_sdk.models.base import AsgardObject
-from asgard_sdk.models.file import GenericFile, LocalPath
-from asgard_sdk.models.section import Section
+from ..models.file import GenericFile
+from ..models.section import Section
+from ..models.config import Config
+from ..models.handler import ObjectHandler
+from ..models import generate_object
 
 from ..connection.plex import Plex
 from ..connection.database import Database
-
-from ..models.config import Config
-from ..models import generate_object
 
 """
     AsgardServer - Abstraction of a running instance of your Server
@@ -16,7 +15,7 @@ from ..models import generate_object
     _database (Database) - The database object for interacting with file metadata
     _plex (Plex) - The plex object for rescanning sections, and cross checking metadata
 """
-class AsgardServer(object):
+class AsgardServer(ObjectHandler):
     def __init__(self, config: Config):
         self.config = config # pre-validated config
 
@@ -34,13 +33,7 @@ class AsgardServer(object):
 
     def disconnect(self):
         self._database.disconnect()
-
-    def get_obj_from_dict(self, dict: dict):
-        pass
-
-    def get_obj_from_local(self, local_path:LocalPath):
-        pass
-
+    
     """
         get_section - Retrieve section metadata from the database
 
@@ -68,7 +61,7 @@ class AsgardServer(object):
         if key:
             pass
 
-        ret = generate_object(section)
+        ret = self.get_obj_from_dict(section)
 
         return ret
 
@@ -95,7 +88,7 @@ class AsgardServer(object):
         
         ret = []
         for section in sections:
-            ret.append(generate_object(section))
+            ret.append(self.get_obj_from_dict(section))
 
         return ret
 
@@ -173,7 +166,7 @@ class AsgardServer(object):
         if (key is not None and key in file.keys()):
             ret = file.get(key)
         else:
-            ret = generate_object(file)
+            ret = self.get_obj_from_dict(file)
 
         if plex:
             pass
@@ -226,7 +219,7 @@ class AsgardServer(object):
             if (key is not None and key in document.keys()):
                 document = document.get(key)
             else:
-                document = generate_object(document)
+                document = self.get_obj_from_dict(document)
             
             ret.append(document)
 
@@ -259,7 +252,7 @@ class AsgardServer(object):
                 pass
             elif file_name in real_file_name:
                 if to_dict is False:
-                    document = generate_object(document)
+                    document = self.get_obj_from_dict(document)
                 elif (key is not None and key in document.keys()):
                     document = document.get(key)
                 

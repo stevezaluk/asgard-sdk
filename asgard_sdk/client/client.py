@@ -1,11 +1,9 @@
-from ..format.print import print_error
-
-from ..models import generate_object
-from ..models.config import ClientConfig
-from ..models.section import Section
-
 from json import loads
 from requests import Session
+
+from ..models.config import ClientConfig
+from ..models.section import Section
+from ..models.handler import ObjectHandler
 
 class FailedToFindResource(Exception):
     def __init__(self, message):
@@ -19,7 +17,7 @@ class InternalServerError(Exception):
     def __init__(self, message):
         super().__init__(message)
 
-class AsgardClient(object):
+class AsgardClient(ObjectHandler):
     def __init__(self, config: ClientConfig):
         self.config = config
         self.config.validate_structure()
@@ -80,7 +78,7 @@ class AsgardClient(object):
         ret = []
 
         for section in sections:
-            section = generate_object(section)
+            section = self.get_obj_from_dict(section)
             ret.append(section)
 
         return ret
@@ -97,7 +95,9 @@ class AsgardClient(object):
         if to_dict:
             return section
 
-        return generate_object(section)
+        return self.get_obj_from_dict(section)
+
+    # TODO: create_file()
 
     def get_file(self, term: str, section: Section = None, key: str = None, plex: bool = False, to_dict: bool = False):
         params = {}
@@ -116,7 +116,7 @@ class AsgardClient(object):
         if to_dict:
             return file
 
-        return generate_object(file)
+        return self.get_obj_from_dict(file)
 
     def index(self, section: Section = None, key: str = None, limit: int = 15, sort: str = None, to_dict: bool = False):
         params = {}
@@ -141,7 +141,7 @@ class AsgardClient(object):
         ret = []
 
         for file in index:
-            file = generate_object(file)
+            file = self.get_obj_from_dict(file)
             ret.append(file)
 
         return ret
@@ -170,7 +170,7 @@ class AsgardClient(object):
         ret = []
 
         for file in search:
-            file = generate_object(file)
+            file = self.get_obj_from_dict(file)
             ret.append(file)
 
         return ret
