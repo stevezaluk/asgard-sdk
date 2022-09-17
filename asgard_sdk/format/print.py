@@ -42,3 +42,15 @@ def print_warning(*text, fatal=False):
         str += t
 
     print(str)    
+
+def prompt(*text):
+    str = "[{y}warning{nc}] ".format(y=YELLOW, nc=NC)
+
+    for t in text:
+        str += t
+
+    user_input = input(str)
+    if user_input == "y" or user_input == "Y" or user_input == "yes":
+        pass
+    else:
+        print_error("Aborting...", fatal=True)
