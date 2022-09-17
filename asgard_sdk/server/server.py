@@ -186,7 +186,7 @@ class AsgardServer(ObjectHandler):
         if section.section_type != file.file_type:
             return None 
 
-        mongo_collection = self._database.get_collection(section.mongo_collection)
+        mongo_collection = self._database.get_collection(section.mongo_collection, self._database.asgard_db)
         insert_id = self._database.insert_document(file.get_json(), mongo_collection)
 
         # update section metadata
