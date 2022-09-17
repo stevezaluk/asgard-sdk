@@ -16,7 +16,7 @@ class LocalPath(object):
         self._tokens = self.path.split("/")
 
         self.file_name = self._tokens[-1]
-        self.file_ext = None
+        self.file_ext = "." + self.file_name.split(".")[-1]
         self.file_location = self.get_location()
         self.file_size = self._stat.st_size # do recursive file size for directory sizes
         self.file_type = self.get_asgard_type()
@@ -45,7 +45,6 @@ class LocalPath(object):
 
         if os.path.isfile(self.path):
             self.type = "file"
-            self.file_ext = "." + self.file_name.split(".")[-1]
         elif os.path.isdir(self.path):
             self.type = "dir"
 
