@@ -83,5 +83,7 @@ class ObjectHandler:
 
             file_dict.update({"document_info":document_info})
             ret = Document(file_dict)
+        else:
+            ret = GenericFile(file_dict)
         
         return ret
