@@ -30,4 +30,4 @@ class GenericFile(AsgardObject):
 
         self.uploaded_date = time_stamp
 
-        self._json.update({"uploaded_by":self.uploaded_by, "uploaded_date":self.uploaded_date})
+        self._json.update({"uploaded_by":self.uploaded_by, "uploaded_date":time_stamp})
