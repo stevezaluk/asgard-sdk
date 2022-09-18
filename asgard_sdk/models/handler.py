@@ -50,7 +50,7 @@ class ObjectHandler:
                 if track.track_type == "Video":
                     video_track_count += 1
                     video_info.update({"video_codec":track.codec_id})
-                    video_info.update({"resoloution":"{w}x{h}".format(w=track.width, h=track.height)})
+                    video_info.update({"resolution":"{w}x{h}".format(w=track.width, h=track.height)})
 
                 if track.track_type == "Audio":
                     audio_track_count += 1
