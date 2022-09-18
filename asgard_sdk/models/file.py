@@ -29,5 +29,6 @@ class GenericFile(AsgardObject):
         time_stamp = time_stamp.strftime('%m-%d-%Y %I:%M:%S %p')
 
         self.uploaded_date = time_stamp
+        self.download_count = 0
 
-        self._json.update({"uploaded_by":self.uploaded_by, "uploaded_date":time_stamp})
+        self._json.update({"uploaded_by":self.uploaded_by, "uploaded_date":time_stamp, "download_count":0})
