@@ -156,7 +156,7 @@ class Database:
 
     def update_document(self, query: dict, update: dict, collection: Collection): # broken
         update_query = {"$set": update}
-        result = collection.update_one(query, update)
+        result = collection.update_one(query, update_query)
 
         matched_count = result.matched_count
 
