@@ -1,5 +1,6 @@
 import hashlib
 import os
+import datetime
 
 class LocalPathNotFound(Exception):
     def __init__(self, message):
@@ -31,6 +32,9 @@ class LocalPath(object):
         return self._tokens
 
     def get_dict(self):
+        self.creation_date = datetime.datetime.fromtimestamp(self.creation_date)
+        self.creation_date = self.creation_date.strftime("%m-%d-%Y %I:%M:%S %p")
+        
         dict = {"file_name":self.file_name, "file_location":self.file_location, "file_size":self.file_size,
                 "file_type":self.file_type, "file_sha":self.get_sha(), "creation_date":self.creation_date}
 
