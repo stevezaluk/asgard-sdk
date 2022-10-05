@@ -189,8 +189,13 @@ class AsgardServer(ObjectHandler):
         mongo_collection = self._database.get_collection(section.mongo_collection, self._database.asgard_db)
         insert_id = self._database.insert_document(file.get_json(), mongo_collection)
 
-        self._database.update_document({"section_name":section.section_name}, {"section_size":section.section_size + file.file_size}, self._database.sections)
-        self._database.update_document({"section_name":section.section_name}, {"total_uploads":section.total_uploads + 1}, self._database.sections)
+        section_size = section.size + file.file_size
+        total_uploads = section.total_uploads + 1
+
+        self._database.update_document({"section_name":section.section_name}, {"section_size":section_size}, self._database.sections)
+        self._database.update_document({"section_name":section.section_name}, {"total_uploads":total_uploads}, self._database.sections)
+
+        self._database.insert_document(file.get_json(), self._database.get_collection("recently_uploaded", self._database.asgard_analytics))
 
         return file
 
@@ -260,3 +265,83 @@ class AsgardServer(ObjectHandler):
                 ret.append(document)
 
         return ret
+
+    def get_popular(self, key: str = None, limit: int = 15, to_dict: bool = False):
+        popular = self._database.index_collection(self._database.get_collection("popular", self._database.asgard_analytics))
+
+        ret = []
+        
+        for document in popular:
+            if to_dict is False:
+                document = self.get_obj_from_dict(document)
+            elif (key is not None and key in document.keys()):
+                document = document.get(key)
+                
+            ret.append(document)
+            
+        return ret
+
+    def get_recently_uploaded(self, key: str = None, limit: int = 15, to_dict: bool = False):
+        recently_uploaded = self._database.index_collection(self._database.get_collection("recently_uploaded", self._database.asgard_analytics))
+
+        ret = []
+        
+        for document in recently_uploaded:
+            if to_dict is False:
+                document = self.get_obj_from_dict(document)
+            elif (key is not None and key in document.keys()):
+                document = document.get(key)
+                
+            ret.append(document)
+
+        if len(ret) > 20:
+            pass
+            
+        return ret
+
+    def get_recently_downloaded(self, key: str = None, limit: int = 15, to_dict: bool = False):
+        recently_downloaded = self._database.index_collection(self._database.get_collection("recently_downloaded", self._database.asgard_analytics))
+
+        ret = []
+        
+        for document in recently_downloaded:
+            if to_dict is False:
+                document = self.get_obj_from_dict(document)
+            elif (key is not None and key in document.keys()):
+                document = document.get(key)
+                
+            ret.append(document)
+            
+        return ret
+
+    def get_favorites(self, key: str = None, limit: int = 15, to_dict: bool = False):
+        favorites = self._database.index_collection(self._database.get_collection("favorites", self._database.asgard_analytics))
+
+        ret = []
+        
+        for document in favorites:
+            if to_dict is False:
+                document = self.get_obj_from_dict(document)
+            elif (key is not None and key in document.keys()):
+                document = document.get(key)
+                
+            ret.append(document)
+            
+        return ret
+
+    def get_feature_file(self, key: str = None, limit: int = 15, to_dict: bool = False, plex: bool = False):
+        feature_file = self._database.get_document({}, self._database.get_collection("feature", self._database.asgard_analytics))
+
+        if feature_file is None:
+            return None
+
+        if to_dict:
+            return feature_file
+        
+        if (key is not None and key in feature_file.keys()):
+            ret = feature_file.get(key)
+        else:
+            ret = self.get_obj_from_dict(feature_file)
+
+        if plex:
+            pass        
