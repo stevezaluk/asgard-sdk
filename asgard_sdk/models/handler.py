@@ -10,6 +10,9 @@ from pymediainfo import MediaInfo
 from ebooklib import epub
 from PyPDF2 import PdfReader
 
+"""
+    ObjectHandler - Transform dictionaries and LocalPath objects into AsgardObjects
+"""
 class ObjectHandler:
 
     def get_obj_from_dict(self, dict: dict):
@@ -44,7 +47,7 @@ class ObjectHandler:
             audio_track_count = 0
             for track in media_info.tracks:
                 if track.track_type == "General":
-                    video_info.update({"duration":track.duration})
+                    video_info.update({"duration":track.other_duration[0]})
                     video_info.update({"format":track.format})
 
                 if track.track_type == "Video":
@@ -87,3 +90,34 @@ class ObjectHandler:
             ret = GenericFile(file_dict)
         
         return ret
+
+    def handle_list(self, list: list, key: str = None, limit: int = None, to_dict: bool = False):
+        if to_dict:
+            return list
+        
+        ret = []
+        for document in list:
+            if (key is not None and key in document.keys()):
+                document = document.get(key)
+            else:
+                document = self.get_obj_from_dict(document)
+            
+            ret.append(document)
+
+        if limit:
+            pass
+        
+        return ret
+    
+    def handle_dict(self, dict: dict, key: str = None, to_dict: bool = False):
+        if to_dict:
+            return dict
+        
+        ret = []
+        if (key is not None and key in dict.keys()):
+            ret = dict.get(key)
+        else:
+            ret = self.get_obj_from_dict(dict)
+
+        return ret
+        
