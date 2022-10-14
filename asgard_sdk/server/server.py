@@ -142,8 +142,14 @@ class AsgardServer(ObjectHandler):
         if section is not None:
             file = self._database.get_document(query, self._database.get_collection(section.mongo_collection, self._database.asgard_db))
         else:
-            raise NotImplementedError("Only retrieval from a single section works for now. Implementation planned by August 10th")
+            for section in self.get_sections(): # test this
+                mongo_collection = section.mongo_collection
 
+                file = self._database.get_document(query, self._database.get_collection(mongo_collection, self._database.asgard_db))
+
+                if file is not None:
+                    break
+        
         ret = self.handle_dict(file, key=key, to_dict=to_dict)
 
         if plex:
@@ -193,7 +199,11 @@ class AsgardServer(ObjectHandler):
         if section is not None:
             index = self._database.index_collection(self._database.get_collection(section.mongo_collection, self._database.asgard_db))
         else:
-            raise NotImplementedError("Only retrieval from a single section works for now. Implementation planned by August 10th")
+            index = []
+            for section in self.get_sections(limit=limit):
+                mongo_collection = section.mongo_collection
+
+                index = index + self._database.index_collection(self._database.get_collection(mongo_collection, self._database.asgard_db))
 
         ret = self.handle_list(index, key=key, limit=limit, to_dict=to_dict)
 
