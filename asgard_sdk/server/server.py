@@ -55,13 +55,7 @@ class AsgardServer(ObjectHandler):
         if section is None:
             return None
 
-        if to_dict:
-            return section
-        
-        if key:
-            pass
-
-        ret = self.get_obj_from_dict(section)
+        ret = self.handle_dict(section, key=key, to_dict=to_dict)
 
         return ret
 
@@ -80,16 +74,9 @@ class AsgardServer(ObjectHandler):
     """
     def get_sections(self, key=None, limit=15, sort=None, to_dict=False):
         sections = self._database.index_collection(self._database.sections)
-        if to_dict:
-            return sections
-
-        if key:
-            pass
         
-        ret = []
-        for section in sections:
-            ret.append(self.get_obj_from_dict(section))
-
+        ret = self.handle_list(sections, key=key, limit=limit, to_dict=to_dict)
+        
         return ret
 
     """
@@ -157,16 +144,7 @@ class AsgardServer(ObjectHandler):
         else:
             raise NotImplementedError("Only retrieval from a single section works for now. Implementation planned by August 10th")
 
-        if file is None:
-            return None
-        
-        if to_dict:
-            return file
-
-        if (key is not None and key in file.keys()):
-            ret = file.get(key)
-        else:
-            ret = self.get_obj_from_dict(file)
+        ret = self.handle_dict(file, key=key, to_dict=to_dict)
 
         if plex:
             pass
@@ -217,17 +195,7 @@ class AsgardServer(ObjectHandler):
         else:
             raise NotImplementedError("Only retrieval from a single section works for now. Implementation planned by August 10th")
 
-        if to_dict:
-            return index
-
-        ret = []
-        for document in index:
-            if (key is not None and key in document.keys()):
-                document = document.get(key)
-            else:
-                document = self.get_obj_from_dict(document)
-            
-            ret.append(document)
+        ret = self.handle_list(index, key=key, limit=limit, to_dict=to_dict)
 
         return ret
     
@@ -269,79 +237,34 @@ class AsgardServer(ObjectHandler):
     def get_popular(self, key: str = None, limit: int = 15, to_dict: bool = False):
         popular = self._database.index_collection(self._database.get_collection("popular", self._database.asgard_analytics))
 
-        ret = []
-        
-        for document in popular:
-            if to_dict is False:
-                document = self.get_obj_from_dict(document)
-            elif (key is not None and key in document.keys()):
-                document = document.get(key)
-                
-            ret.append(document)
-            
+        ret = self.handle_list(popular, key=key, limit=limit, to_dict=to_dict)
+
         return ret
 
     def get_recently_uploaded(self, key: str = None, limit: int = 15, to_dict: bool = False):
         recently_uploaded = self._database.index_collection(self._database.get_collection("recently_uploaded", self._database.asgard_analytics))
 
-        ret = []
-        
-        for document in recently_uploaded:
-            if to_dict is False:
-                document = self.get_obj_from_dict(document)
-            elif (key is not None and key in document.keys()):
-                document = document.get(key)
-                
-            ret.append(document)
+        ret = self.handle_list(recently_uploaded, key=key, limit=limit, to_dict=to_dict)
 
-        if len(ret) > 20:
-            pass
-            
         return ret
 
     def get_recently_downloaded(self, key: str = None, limit: int = 15, to_dict: bool = False):
         recently_downloaded = self._database.index_collection(self._database.get_collection("recently_downloaded", self._database.asgard_analytics))
 
-        ret = []
-        
-        for document in recently_downloaded:
-            if to_dict is False:
-                document = self.get_obj_from_dict(document)
-            elif (key is not None and key in document.keys()):
-                document = document.get(key)
-                
-            ret.append(document)
+        ret = self.handle_list(recently_downloaded, key=key, limit=limit, to_dict=to_dict)
             
         return ret
 
     def get_favorites(self, key: str = None, limit: int = 15, to_dict: bool = False):
         favorites = self._database.index_collection(self._database.get_collection("favorites", self._database.asgard_analytics))
 
-        ret = []
-        
-        for document in favorites:
-            if to_dict is False:
-                document = self.get_obj_from_dict(document)
-            elif (key is not None and key in document.keys()):
-                document = document.get(key)
-                
-            ret.append(document)
+        ret = self.handle_list(favorites, key=key, limit=limit, to_dict=to_dict)
             
         return ret
 
     def get_feature_file(self, key: str = None, limit: int = 15, to_dict: bool = False, plex: bool = False):
         feature_file = self._database.get_document({}, self._database.get_collection("feature", self._database.asgard_analytics))
 
-        if feature_file is None:
-            return None
+        ret = self.handle_dict(feature_file, key=key, limit=limit, to_dict=to_dict)
 
-        if to_dict:
-            return feature_file
-        
-        if (key is not None and key in feature_file.keys()):
-            ret = feature_file.get(key)
-        else:
-            ret = self.get_obj_from_dict(feature_file)
-
-        if plex:
-            pass        
+        return ret
