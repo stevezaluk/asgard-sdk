@@ -158,7 +158,7 @@ class AsgardServer(ObjectHandler):
         return ret
 
     """
-        create_file - Insert a files metadata into the database. This does not upload
+        register_file - Insert a files metadata into the database. This does not upload
 
         Required Paramaters:
             file (GenericFile) - The file object you want to insert
@@ -173,7 +173,7 @@ class AsgardServer(ObjectHandler):
         mongo_collection = self._database.get_collection(section.mongo_collection, self._database.asgard_db)
         insert_id = self._database.insert_document(file.get_json(), mongo_collection)
 
-        section_size = section.size + file.file_size
+        section_size = section.section_size + file.file_size
         total_uploads = section.total_uploads + 1
 
         self._database.update_document({"section_name":section.section_name}, {"section_size":section_size}, self._database.sections)
