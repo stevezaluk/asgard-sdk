@@ -116,7 +116,7 @@ class Database:
         return ret
 
     def create_collection(self, name: str, database: Database):
-        return database[name]
+        return database.create_collection(name=name) # test this
 
     def get_collection(self, name: str, database: Database) -> Collection:
         ret = None
