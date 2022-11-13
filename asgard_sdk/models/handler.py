@@ -1,5 +1,5 @@
 from ..models.local import LocalPath
-from ..models.file import GenericFile
+from ..models.file import File
 from ..models.video import Video
 from ..models.document import Document
 from ..models.game import Game
@@ -20,7 +20,7 @@ class ObjectHandler:
 
         keys = dict.keys()
         if "file_name" in keys:
-            ret = GenericFile(dict)
+            ret = File(dict)
 
             if "video_info" in keys:
                 ret = Video(dict)
@@ -87,7 +87,7 @@ class ObjectHandler:
             file_dict.update({"document_info":document_info})
             ret = Document(file_dict)
         else:
-            ret = GenericFile(file_dict)
+            ret = File(file_dict)
         
         return ret
 

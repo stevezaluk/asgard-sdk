@@ -1,10 +1,8 @@
-from .file import GenericFile
+from .file import File
 
-class Game(GenericFile):
-    def __init__(self, json: dict):
+class Game(File):
+    def __init__(self, json: dict = None):
         super(Game, self).__init__(json)
 
-        self._root = self.get_json().get("game_info")
-
-        self.region = self._root.get("region")
-        self.console = self._root.get("console")
+        self.region = None
+        self.console = None

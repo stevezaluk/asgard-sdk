@@ -1,14 +1,16 @@
-from .file import GenericFile
+from .file import File
 
-class Video(GenericFile):
-    def __init__(self, json: dict):
+class Video(File):
+    def __init__(self, json: dict = None):
         super(Video, self).__init__(json)
 
-        self._root = self.get_json().get("video_info")
+        self.duration = None
+        self.format = None
+        self.resoloution = None
+        self.video_codec_id = None
+        self.video_mime_type = None
+        self.audio_codec_id = None
 
-        self.resolution = self._root.get("resolution")
-        self.format = self._root.get("format")
-        self.video_codec = self._root.get("video_codec")
-        self.audio_codec = self._root.get("audio_codec")
-        self.language = self._root.get("language")
-        self.duration = self._root.get("duration")
+        self.subtitle_count = None
+        
+        self.languages = None

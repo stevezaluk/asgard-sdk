@@ -1,4 +1,4 @@
-from ..models.file import GenericFile
+from ..models.file import File
 from ..models.section import Section
 from ..models.config import Config
 from ..models.handler import ObjectHandler
@@ -166,7 +166,7 @@ class AsgardServer(ObjectHandler):
 
         Returns None on fail, and a tuple of the file and the insert_id on success
     """
-    def register_file(self, file: GenericFile, section: Section):
+    def register_file(self, file: File, section: Section):
         if section.section_type != file.file_type:
             return None 
 

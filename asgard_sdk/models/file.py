@@ -4,31 +4,28 @@ from .base import AsgardObject
 
 import datetime
 
-class GenericFile(AsgardObject):
-    def __init__(self, json: dict):
-        super(GenericFile, self).__init__(json)
+class File(AsgardObject):
+    def __init__(self, json: dict = None):
+        super(File).__init__(json)
 
-        self.file_name = self.get_value("file_name")
-        self.file_location = self.get_value("file_location")
-        self.file_size = self.get_value("file_size")
-        self.file_type = self.get_value("file_type")
-        self.file_sha = self.get_value("file_sha")
+        self.file_name = None
+        self.file_ext = None
+        self.file_location = None
+        self.file_size = None
 
-        self.uploaded_date = self.get_value("uploaded_date")
-        self.uploaded_by = self.get_value("uploaded_by")
-        self.creation_date = self.get_value("creation_date")
+        self.file_type = None
+        self.file_sha = None
 
-        self.download_count = self.get_value("download_count")
+        self.home_section = None
 
-        self.remote_path = self.file_location + self.file_name
+        self.upload_meta = None
+    
+    def get_size_string(self, bytes: int):
+        size = round(bytes / 1000000, 2)
+        size_str = "{mb} MB".format(mb=size)
 
-    def set_upload_info(self, uploaded_by: str):
-        self.uploaded_by = uploaded_by
+        if size >= 1000.00:
+            size = round(size / 1000, 2)
+            size_str = "{gb} GB".format(gb=size)
         
-        time_stamp = datetime.datetime.now()
-        time_stamp = time_stamp.strftime('%m-%d-%Y %I:%M:%S %p')
-
-        self.uploaded_date = time_stamp
-        self.download_count = 0
-
-        self._json.update({"uploaded_by":self.uploaded_by, "uploaded_date":time_stamp, "download_count":0})
+        return size_str
